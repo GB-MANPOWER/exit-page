@@ -26,15 +26,17 @@
             const match = data.content.find(sub => sub.answers[FIELD_IQAMA]?.answer == iqamaId);
             if (match) {
                 const submissionId = match.id;
-                const updateData = {};
-                updateData[FIELD_STATE] = "已退场";
-                updateData[FIELD_EXITTIME_TOTAL] = new Date().toISOString();
+                const updateData = {
+  "answers": {}
+};
+updateData.answers[FIELD_STATE] = "已退场";
+updateData.answers[FIELD_EXITTIME_TOTAL] = new Date().toISOString();
 
-                await fetch(`https://api.jotform.com/submission/${submissionId}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(updateData)
-                });
+await fetch(`https://api.jotform.com/submission/${submissionId}`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(updateData)
+});
             }
         }
 
