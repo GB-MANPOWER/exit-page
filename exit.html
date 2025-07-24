@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Processing Exit</title>
+</head>
+<body>
+    <p>正在处理退场信息，请稍候...</p >
+
+    <script>
+    (async function() {
+        const API_KEY = "a959a8a8827ecbd2ca0bd2413974e15a"; 
+        const TOTAL_TABLE_FORM_ID = "252005792518053"; 
+
+        const FIELD_IQAMA = "typeA";
+        const FIELD_STATE = "typeA30";
+        const FIELD_EXITTIME_TOTAL = "typeA32";
+
+        const params = new URLSearchParams(window.location.search);
+        const iqamaId = params.get(FIELD_IQAMA);
+
+        if (iqamaId) {
+            const url = `https://api.jotform.com/form/${TOTAL_TABLE_FORM_ID}/submissions?apiKey=${API_KEY}`;
+            const res = await fetch(url);
+            const data = await res.json();
+
+            const match = data.content.find(sub => sub.answers[FIELD_IQAMA]?.answer === iqamaId);
+            if (match) {
+                const submissionId = match.id;
+                const updateData = {};
+                updateData[FIELD_STATE] = "已退场";
+                updateData[FIELD_EXITTIME_TOTAL] = new Date().toISOString();
+
+                await fetch(`https://api.jotform.com/submission/${submissionId}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(updateData)
+                });
+            }
+        }
+        // 更新完数据库后跳转到 WhatsApp 群
+        window.location.href = "https://chat.whatsapp.com/KSDpmq9WgiwA7cKq";
+    })();
+    </script>
+</body>
+</html>
